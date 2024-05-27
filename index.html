@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>뭐먹었니</title>
+	<link href='./css/index.css' rel='stylesheet' />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	
+</head>
+
+<body>
+
+	<header class="main-header">
+		<div>
+			<a href="./index.html">
+				<img alt="..." src="https://notion-emojis.s3-us-west-2.amazonaws.com/prod/svg-twitter/1f412.svg" />
+			</a>
+		</div>
+		<nav>
+			<ul>
+				<li>
+					<a id="BtnLogIn" href="./login.html">로그인</a>
+				</li>
+				<li>
+					<a id="BtnMembership" href="./signup.html">회원가입</a>
+				</li>
+				<il>
+					<a id="BtnLogOut">로그아웃</a>
+				</il>
+				<li>
+					<button id="btnwrite" type="button">글쓰기</button>
+				</li>
+			</ul>
+		</nav>
+	</header>
+
+	<main>
+		<nav>
+			<ul class="main-category"></ul>
+		</nav>
+		<ul class="main-content"></ul>
+	</main>
+	<script type="module">
+
+		import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+		import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+		import { collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+		import { getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+		import { query, where } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"; // 카테고리 선택 시 DB Select
+
+		const firebaseConfig = {
+			apiKey: "AIzaSyDb9vFmI6vwLBKZbx9cWlwMcI02pb3MWf0",
+			authDomain: "sparta-b0b67.firebaseapp.com",
+			projectId: "sparta-b0b67",
+			storageBucket: "sparta-b0b67.appspot.com",
+			messagingSenderId: "501371819843",
+			appId: "1:501371819843:web:c11ccc2f2adff6418cc1f6",
+			measurementId: "G-M7TB311L0N"
+		};
+
+		const app = initializeApp(firebaseConfig);
+		const db = getFirestore(app);
+
+		$("#BtnLogOut").click(function () {
+			sessionStorage.removeItem("id");
+			alert('로그아웃 되었습니다.');
+			window.location.reload();
+		});
+
+		$('#btnwrite').click(function () {
+			if (!loginYn) {
+				return alert('로그인 후 이용해주세요.');
+			}
+
+			location.href = './write.html';
+		});
+
+		let selectCategory = "";
+
+		$('.main-category li').click(function (e) {
+
+			$('.main-category li').removeClass('select');
+			$(this).addClass('select');
+
+			selectCategory = this.innerText
+
+			if (selectCategory === "전체") {
+				selectCategory = ""
+			}
+
+			SelectCategory_Find(selectCategory)
+
+		});
+
+		async function SelectCategory_Find(selectCategory) {
+
+			$('.main-content').empty();
+
+			// 카테고리 전체 선택 시
+			if (selectCategory === "") {
+				// 게시글 데이터 받아오기
+				let docs = await getDocs(collection(db, "minp"));
+				docs.forEach((doc) => {
+					let row = doc.data();
+					// console.log(row);
+
+					let name = row['name'];
+					let title = row['title'];
+					let content = row['content'];
+					let date2 = row['date2'];
+					let date3 = row['date3'];
+					let img = row['img'];
+					//let StringTime = row['date2'].replace(/:/gi, '');
+
+					let temp_html = `<li class="main-content-card">
+	<a href="./show.html?date_id=${date2}">
+		<div class="main-content-card-containerImg">
+			<img alt="..." src="${img}" />
+		</div>
+		<div class="main-content-card-title">
+			${title}
+		</div>
+		<div class="main-content-card-user">
+			${name}
+		</div>
+		<div class="main-content-card-day">
+			${date3}
+		</div>
+	</a>
+</li>`;
+					$('.main-content').append(temp_html);
+
+				});
+			} else {
+
+				const q = query(collection(db, "minp"), where("category", "==", selectCategory));
+				const querySnapshot = await getDocs(q);
+
+				querySnapshot.forEach((doc) => {
+
+					let row = doc.data();
+					let name = row['name'];
+					let title = row['title'];
+					let content = row['content'];
+					let date2 = row['date2'];
+					let date3 = row['date3'];
+					let img = row['img'];
+
+					let temp_html = `<li class="main-content-card">
+	<a href="./show.html?date_id=${date2}">
+		<div class="main-content-card-containerImg">
+			<img alt="..." src="${img}" />
+		</div>
+		<div class="main-content-card-title">
+			${title}
+		</div>
+		<div class="main-content-card-user">
+			${name}
+		</div>
+		<div class="main-content-card-day">
+			${date3}
+		</div>
+	</a>
+</li>`;
+					$('.main-content').append(temp_html);
+
+				});
+			}
+		}
+
+		let docs = await getDocs(collection(db, "minp"));
+		docs.forEach((doc) => {
+			let row = doc.data();
+			// console.log(row);
+
+			let name = row['name'];
+			let title = row['title'];
+			let content = row['content'];
+			let date2 = row['date2'];
+			let date3 = row['date3'];
+			let img = row['img'];
+			//let StringTime = row['date2'].replace(/:/gi, '');
+
+			let temp_html = `<li class="main-content-card">
+				<a href="./show.html?date_id=${date2}">
+					<div class="main-content-card-containerImg">
+						<img alt="..." src="${img}" />
+					</div>
+					<div class="main-content-card-title">
+						${title}
+					</div>
+					<div class="main-content-card-user">
+						${name}
+					</div>
+					<div class="main-content-card-day">
+						${date3}
+					</div>
+				</a>
+			</li>`;
+			$('.main-content').append(temp_html);
+
+		});
+
+
+	</script>
+
+	<script>
+
+		let loginYn = false;
+
+		if (sessionStorage.getItem("id")) {
+			loginYn = true;
+		}
+
+		if (loginYn) {
+			$('#BtnLogIn').hide();
+			$('#BtnMembership').hide();
+			$('#BtnLogOut').show();
+		} else {
+			$('#BtnLogIn').show();
+			$('#BtnMembership').show();
+			$('#BtnLogOut').hide();
+		}
+
+		const category = ["전체", "한식", "중식", "일식", "치킨", "피자", "버거", "분식", "기타"];
+
+		category.forEach((el, idx) => {
+
+			let li;
+
+			if (idx === 0) {
+				li = `<li class="main-category-list select">${el}</li>`;
+			} else {
+				li = `<li class="main-category-list">${el}</li>`;
+			}
+
+			$('.main-category').append(li);
+		});
+
+	</script>
+</body>
+
+</html>

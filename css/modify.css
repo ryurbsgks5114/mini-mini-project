@@ -1,0 +1,155 @@
+* {
+  box-sizing: border-box;
+}
+
+input::file-selector-button {
+  display: none;
+}
+
+i {
+  position: absolute;
+  top: 50%;
+  left: 105px;
+	transform: translate(-50%, -50%);
+}
+
+.margin-left-50 {
+  margin-left: 50px;
+}
+
+.modify-header {
+  width: 970px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.modify-main {
+  width: 970px;
+  margin: 10px auto 0;
+  position: relative;
+}
+
+.modify-main-flex {
+  width: 100%;
+  display: flex;
+}
+
+.modify-main-container {
+  position: relative;
+}
+
+.modify-main-container > label {
+  position: absolute; 
+  top: -22px; 
+  margin: 30px 32px 32px 16px; 
+  background-color: white; 
+  padding: 0 8px;  
+  color: #fcd11e;
+}
+
+.modify-main-container > input {
+  margin: 20px 0; 
+  border: 0.3px solid #fcd11e;
+  border-radius: 5px; 
+  padding: 0 20px; 
+  outline: none;
+  font-size: 18px;
+}
+
+.modify-main-container > select {
+  width: 150px; 
+  height: 50px; 
+  margin: 20px 0; 
+  border: 0.3px solid #fcd11e;
+  border-radius: 5px; 
+  padding: 0 20px; 
+  outline: none;
+  appearance:none;
+  font-size: 16px;
+}
+
+.modify-main-container > select:hover {
+  cursor: pointer;
+}
+
+.modify-main-container > textarea {
+  width: 100%;
+  height: 450px;
+  margin: 20px 0;
+  padding: 20px 20px;
+  border: 0.3px solid #fcd11e;
+  outline: none;
+  font-size: 18px;
+}
+
+.modify-main-container-title {
+  width: 500px; 
+  height: 50px;
+}
+
+.modify-main-container-img {
+  width: 270px;
+  height: 270px;
+  overflow: hidden;
+  visibility: none;
+}
+
+.modify-main-container-img:hover {
+  cursor: pointer;
+}
+
+.modify-main-img {
+  position: relative;
+}
+
+.modify-main-img > img {
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  object-fit: cover;
+  left: 10.5px;
+  bottom: 30px;
+}
+
+.modify-main-footer {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.modify-main-footer > button {
+  margin: 0 10px;
+}
+
+.modify-main-footer-write-btn {
+  width: 80px;
+  height: 50px;
+  border: 2px solid #fcd11e;
+  background: #fcd11e;
+  color: black;
+  border-radius: 1rem;
+  font-size: 16px;
+}
+
+.modify-main-footer-write-btn:hover {
+  background: #fff;
+  border: 2px solid #fcd11e;
+  cursor: pointer;
+}
+
+.modify-main-footer-cancle-btn {
+  width: 80px;
+  height: 50px;
+  border: 2px solid #dc3545;
+  background: #dc3545;
+  color: white;
+  border-radius: 1rem;
+  font-size: 16px;
+}
+
+.modify-main-footer-cancle-btn:hover {
+  color: black;
+  background: #fff;
+  border: 2px solid #dc3545;
+  cursor: pointer;
+}

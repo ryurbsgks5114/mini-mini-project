@@ -1,0 +1,152 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding-top: 80px;
+}
+
+main {
+  width: 970px;
+  margin: 0 auto;
+}
+
+ul {
+  display: flex;
+  padding: 0;
+  align-items: center;
+}
+
+li {
+  list-style: none;
+}
+
+.main-header {
+  width: 970px;
+  height: 80px;
+  margin: 0 auto;
+  display: flex;
+  background-color: #fff;
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, 0);
+  align-items: center;
+}
+
+.main-header img {
+  margin-left: 20px;
+  width: 50px;
+  height: 50px;
+}
+
+.main-header > nav {
+  margin-left: auto;
+  margin-right: 10px;
+}
+
+.main-header > nav li{
+  margin: 0 10px;
+}
+
+.main-header > nav a {
+	text-decoration-line: none;
+	color: black;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.main-header > nav button {
+  width: 100px;
+  height: 40px;
+  border: 2px solid #fcd11e;
+  background: #fcd11e;
+  color: black;
+  border-radius: 25px;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.main-header > nav button:hover {
+  background: #fff;
+  border: 2px solid #fcd11e;
+  cursor: pointer;
+}
+
+.main-category {
+  justify-content: space-evenly;
+  height: 40px;
+}
+
+.main-category > li {
+  cursor: pointer;
+}
+
+.main-category-list {
+  color: #cfcece;
+}
+
+.main-category > li:hover {
+  color: black;
+  font-weight: 700;
+  padding-bottom: 3px;
+  border-bottom: 3px solid #fcd11e;
+}
+
+.select {
+  color: black;
+  font-weight: 700;
+  padding-bottom: 3px;
+  border-bottom: 3px solid #fcd11e;
+}
+
+.main-content {
+  flex-wrap: wrap;
+}
+
+.main-content-card {
+  width: 280px;
+  margin-bottom: 50px;
+}
+
+.main-content-card:nth-child(3n - 1) {
+  margin: 0 65px;
+  margin-bottom: 50px;
+}
+
+.main-content-card > a {
+  text-decoration-line: none;
+	color: black;
+}
+
+.main-content-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.main-content-card div {
+  text-overflow:ellipsis;
+  overflow:hidden;
+  white-space:nowrap;
+}
+
+.main-content-card-containerImg {
+  width: 280px;
+  height: 280px;
+}
+
+.main-content-card-title {
+  margin: 5px 0;
+  font-weight: bold;
+}
+
+.main-content-card-user {
+  margin-bottom: 3px;
+  font-size: 14px;
+}
+
+.main-content-card-day {
+  font-size: 13px;
+}

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 작성 페이지 </title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="module">
+        // Firebase SDK 라이브러리 가져오기
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        import { getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+        //
+        import { getStorage, ref, uploadBytes, getDownloadURL, uploadBytesResumable } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
+        import { doc, setDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        const firebaseConfig = {
+            apiKey: "AIzaSyDb9vFmI6vwLBKZbx9cWlwMcI02pb3MWf0",
+            authDomain: "sparta-b0b67.firebaseapp.com",
+            projectId: "sparta-b0b67",
+            storageBucket: "sparta-b0b67.appspot.com",
+            messagingSenderId: "501371819843",
+            appId: "1:501371819843:web:c11ccc2f2adff6418cc1f6",
+            measurementId: "G-M7TB311L0N"
+        };
+    
+        // Firebase 인스턴스 초기화
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+    
+        let sessionValue = sessionStorage.getItem('id'); // id 선언
+        $('#name1').text(sessionValue) // name1 칸을 id값으로 바꾼다
+    
+        $('#wkrtjd').click(async function () { //작성 버튼을 누르면
+    
+            let img = null;
+            let title = $('#title').val();
+            let content = $('#content').val();
+            let today = new Date();
+            let year = today.getFullYear();
+            let month = today.getMonth() + 1;
+            let date = today.getDate();
+            let hour = today.getHours();
+            let minutes = today.getMinutes();
+            let seconds = today.getSeconds();
+            let category = $('#category2').val();
+            let name = sessionStorage.getItem('id');
+            // id 날짜 정보 
+            let date2 = `${year}${(("00" + month.toString()).slice(-2))}${(("00" + date.toString()).slice(-2))}${hour}${minutes}${seconds}`;
+            // 메인 페이지 출력 날짜 정보
+            let date3 = `${year}-${(("00" + month.toString()).slice(-2))}-${(("00" + date.toString()).slice(-2))}`;
+    
+            const storage = getStorage(app);
+            const file = document.querySelector('#tkwls').files[0];
+    
+            if (document.querySelector('#tkwls').value == '') { // 사진 첨부가 안돼있으면
+                alert('사진을 첨부 해주세요.') // 알람을 띄운다
+            } else { // 그 외의 경우에는
+                const storageRef = ref(storage, 'images/' + file.name + date2); // 사진을 업로드하고
+                uploadBytes(storageRef, file).then((snapshot) => {
+                    console.log('Uploaded a blob or file!');
+    
+                    getDownloadURL(snapshot.ref).then((url) => { // url을 받는다
+                        console.log('File available at', url);
+                        // ...
+                        img = url;
+                    }).then(async () => {
+                        let abc = { name, title, content, date2, date3, img, category };
+                        await setDoc(doc(db, "minp", 'post' + date2), abc); //abc라는 데이터를 전송하고
+                        alert('작성 완료'); // 작성 완료라는 알람을 띄운다
+                        $('#title').val("");
+                        $('#category2').val("");
+                        $('#content').val("");
+                        $('#tkwls').val("");
+                        location.href = `./show.html?date_id=${date2}`; // 조회 페이지로 이동한다.
+                    })
+                });
+            }
+        });
+    
+        $('#cnlth').click(async function () { // 취소 버튼을 누르면
+            history.back(); // 이전 페이지로
+        });
+        var sel_file;
+        $(document).ready(function () {
+            $("#tkwls").on("change", handleImgFileSelect); // 사진 첨부하면 input 위에 사진 썸네일 띠우는 기눙
+        });
+    
+        function handleImgFileSelect(e) {
+            var files = e.target.files;
+            var filesArr = Array.prototype.slice.call(files);
+    
+            filesArr.forEach(function (f) {
+                if (!f.type.match("image.*")) {
+                    alert("이미지 파일만 첨부해주세요.");
+                    return;
+                }
+    
+                sel_file = f;
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $("#img").attr("src", e.target.result);
+                }
+                reader.readAsDataURL(f);
+            });
+        };
+    </script>
+</head>
+<style>
+    .a {
+        width: 1000px;
+        display: flex;
+        flex-direction: column;
+        margin: 50px auto 20px auto;
+    }
+
+    .content {
+        height: 500px;
+        width: 1000px;
+    }
+
+    .pagetitle {
+        margin-top: 50px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .vkdlfcjaqn {
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        width: 1200px;
+        justify-content: center;
+    }
+
+    .btn1 {
+        text-align: center;
+
+    }
+
+    .btn2 {
+        display: inline-block;
+        margin: 50px 20px 0px 20px;
+    }
+</style>
+
+<body>
+    <h1 class="pagetitle"> 게시글 작성 페이지 </h1>
+    <div class="a">
+        <div>
+            <p>작성자 : <span id="name1"> 0 </span></p>
+        </div>
+        <div class='category'>
+            <label for="exampleFormControlInput1" class="form-label">카테고리</label>
+            <select id='category' class="form-select" aria-label="Default select example">
+                <option selected>카테고리를 지정해주세요</option>
+                <option value=한식>한식</option>
+                <option value=중식>중식</option>
+                <option value=일식>일식</option>
+            </select>
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">제목</label>
+                <input id='title' type="email" class="form-control" id="exampleFormControlInput1"
+                    placeholder="제목을 입력해주세요">
+            </div>
+            <div class="mb-3">
+                <label for="exampleFormControlTextarea1" class="form-label">내용</label>
+                <textarea id='content' class="content" id="exampleFormControlTextarea1" rows="3"
+                    placeholder="내용을 입력해주세요"></textarea>
+            </div>
+        </div>
+
+        <div class="vkdlfcjaqn">
+            <div class="mb-3">
+                <div class="img_wrap">
+                    <img id="img" />
+                </div>
+                <label for="formFileMultiple" class="form-label">사진 첨부 하기</label>
+                <input class="form-control" type="file" id="tkwls" accept="image/*">
+            </div>
+
+        </div>
+        <div class="btn1">
+            <div class="btn2">
+                <button id='wkrtjd' type="button" class="btn btn-primary">작성</button>
+                <button id="cnlth" class="btn btn-outline-dark">취소</button>
+            </div>
+        </div>
+
+</body>
+
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Sign-up</title>
+	<link href='./css/login.css' rel='stylesheet' />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script type="module">
+
+		import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+		import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+		import { collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+		import { getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+		// 테스트 용 내꺼
+		// const firebaseConfig = {
+		// 	apiKey: "AIzaSyC5fyxcmxqsTSQQf8fDUGSXrBnloDB6aYA",
+		// 	authDomain: "sparta-5784d.firebaseapp.com",
+		// 	projectId: "sparta-5784d",
+		// 	storageBucket: "sparta-5784d.appspot.com",
+		// 	messagingSenderId: "853122067267",
+		// 	appId: "1:853122067267:web:a0ca2f1cd399c002751df6"
+		// };
+
+		// 종원님
+		const firebaseConfig = {
+			apiKey: "AIzaSyDb9vFmI6vwLBKZbx9cWlwMcI02pb3MWf0",
+			authDomain: "sparta-b0b67.firebaseapp.com",
+			projectId: "sparta-b0b67",
+			storageBucket: "sparta-b0b67.appspot.com",
+			messagingSenderId: "501371819843",
+			appId: "1:501371819843:web:c11ccc2f2adff6418cc1f6",
+			measurementId: "G-M7TB311L0N"
+		};
+
+		const app = initializeApp(firebaseConfig);
+		const db = getFirestore(app);
+
+		let button_flag = false;
+
+		$("#idcheckbutton").click(async function () {
+
+			let id = $('#id').val();
+			let id_flag = false;
+
+			if (id === '') {
+				alert("아이디를 입력하세요.");
+				return;
+			}
+
+			let docs = await getDocs(collection(db, "user_id"));
+
+			docs.forEach((doc) => {
+				let row = doc.data();
+
+				if (row['id'] === id) {
+					id_flag = true;
+				}
+			});
+
+			if (id_flag) {
+				alert("중복되어 사용이 불가능한 아이디 입니다 !");
+				$('#id').val("");
+				return
+			}
+
+			alert("사용가능한 아이디 입니다 !");
+
+			button_flag = true;
+		})
+
+		$('#password').keyup(function (e) {
+			if (e.keyCode === 13) {
+				$('#signupbutton').click();
+			}
+		});
+
+		$("#signupbutton").click(async function () {
+			let id = $('#id').val();
+			let password = $('#password').val();
+
+			if (id === '') {
+				alert("아이디를 입력하세요.");
+				return;
+			}
+
+			if (password === '') {
+				alert("패스워드를 입력하세요.");
+				return;
+			}
+
+			if (button_flag === false) {
+				alert("아이디 중복 확인을 해주세요 !")
+				return;
+			}
+
+			let doc = {
+				'id': id,
+				'password': password
+			};
+
+			await addDoc(collection(db, "user_id"), doc);
+			alert('회원가입 완료!');
+
+			location.href = './login.html';
+		})
+
+	</script>
+</head>
+
+<body>
+	<main class="login-page">
+		<div class="login-page-icon">
+			<a href="./index.html">Home</a>
+		</div>
+		<div class="login-content">
+			<div>
+
+				<h2>회원가입</h2>
+
+				<div class="login-flexbox">
+					<input id="id" type="text" placeholder="아이디를 입력해주세요">
+					<button id="idcheckbutton">중복 확인</button>
+				</div>
+
+				<div class="login-flexbox">
+					<input id="password" type="password" placeholder="비밀번호를 입력해주세요">
+				</div>
+
+				<div class="login-footer">
+					<a id="loginbutton" href="./login.html">로그인</a>
+					<button id="signupbutton" type="button">회원가입</button>
+				</div>
+
+			</div>
+		</div>
+	</main>
+</body>
+
+</html>

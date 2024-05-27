@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>조이름이뭐조</title>
+	<link href='./css/login.css' rel='stylesheet' />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script type="module">
+
+		import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+		import { getFirestore, collection, addDoc, getDocs, query, where } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+		// 종원님
+		const firebaseConfig = {
+			apiKey: "AIzaSyDb9vFmI6vwLBKZbx9cWlwMcI02pb3MWf0",
+			authDomain: "sparta-b0b67.firebaseapp.com",
+			projectId: "sparta-b0b67",
+			storageBucket: "sparta-b0b67.appspot.com",
+			messagingSenderId: "501371819843",
+			appId: "1:501371819843:web:c11ccc2f2adff6418cc1f6",
+			measurementId: "G-M7TB311L0N"
+		};
+
+		const app = initializeApp(firebaseConfig);
+		const db = getFirestore(app);
+
+		$('#loginID').keyup(function (e) {
+			if (e.keyCode === 13) {
+				$('#loginBtn').click();
+			}
+		});
+
+		$('#loginPW').keyup(function (e) {
+			if (e.keyCode === 13) {
+				$('#loginBtn').click();
+			}
+		});
+
+		$('#loginBtn').click(async function () {
+
+			let id = $('#loginID').val();
+			let pw = $('#loginPW').val();
+
+			if (!id || !pw) {
+				return alert('아이디와 비밀번호를 입력해주세요');
+			}
+
+			let checkID, checkPW;
+			
+			const q = query(
+				collection(db, 'user_id'),
+				where('id', '==', id)
+			);
+			const querySnapshot = await getDocs(q);
+
+			querySnapshot.forEach((el) => {
+				checkID = el.data().id;
+				checkPW = el.data().password;
+			});
+
+			if (id !== checkID || pw !== checkPW) {
+				return alert('아이디와 비밀번호를 확인해주세요');
+			}
+
+			sessionStorage.setItem("id", id);
+			location.href = './index.html';
+		});
+
+	</script>
+</head>
+
+<body>
+	<main class="login-page">
+		<div class="login-page-icon">
+			<a href="./index.html">Home</a>
+		</div>
+		<div class="login-content">
+			<div>
+				<h2>로그인</h2>
+
+				<div class="login-flexbox">
+					<input id="loginID" type="text" placeholder="아이디를 입력해주세요">
+				</div>
+
+				<div class="login-flexbox">
+					<input id="loginPW" type="password" placeholder="비밀번호를 입력해주세요">
+				</div>
+
+				<div class="login-footer">
+					<a href="./signup.html">회원가입</a>
+					<button id="loginBtn">로그인</button>
+				</div>
+			</div>
+		</div>
+	</main>
+</body>
+
+</html>

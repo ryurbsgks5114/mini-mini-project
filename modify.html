@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>게시글 작성 페이지 </title>
+  <link rel="stylesheet" href="./css/modify.css" />
+  <script src="https://kit.fontawesome.com/f1af7234b5.js" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script type="module">
+    // Firebase SDK 라이브러리 가져오기
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    import { collection, addDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    import { getDocs } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL, uploadBytesResumable } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js";
+    import { query, where } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+    //권수연 = 글 업데이트 추가한 부분
+    import { doc, updateDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyDb9vFmI6vwLBKZbx9cWlwMcI02pb3MWf0",
+      authDomain: "sparta-b0b67.firebaseapp.com",
+      projectId: "sparta-b0b67",
+      storageBucket: "sparta-b0b67.appspot.com",
+      messagingSenderId: "501371819843",
+      appId: "1:501371819843:web:c11ccc2f2adff6418cc1f6",
+      measurementId: "G-M7TB311L0N"
+    };
+
+    // Firebase 인스턴스 초기화
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    //id 값 가져오기
+    const date_id = new URLSearchParams(location.search).get('date_id');
+
+    // 업로드한 사진을 내용에서 확인/수정할 수 있게 세팅
+
+    let name;
+    let title;
+    let content;
+    let date;
+    let date2;
+    let category;
+    let img;
+
+    //DB에서 id 값에 맞는 특정 데이터 가져오기
+    const q = query(
+      collection(db, 'minp'),
+      where('date2', '==', date_id)
+    );
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach((el) => {
+      name = el.data().name;
+      title = el.data().title;
+      content = el.data().content;
+      date = el.data().date3;
+      date2 = el.data().date2;
+      img = el.data().img;
+      category = el.data().category;
+    });
+
+    //해당 정보 posting
+    //$("#name").text(name);
+    //$("#date").text(date);
+    $("#title").val(title);
+    // $("#category").val(category);
+    $("#category").val(category).prop("selected", true);
+    $("#content").text(content);
+    $("#thumbnail").attr("src", img);
+
+    //권수연 = 글 업데이트 추가한 부분
+
+    //글 내용 수정 된 거 DB에 업데이트
+    $('#wkrtjd').click(async function () {
+
+      let titleRef = $('#title').val();
+      let contentRef = $('#content').val();
+      //
+
+      const storage = getStorage(app);
+      const file = document.querySelector('#tkwls').files[0];
+
+      let img_new;
+
+      const storageRef = ref(storage, 'images/' + file.name + date2); // 사진을 업로드하고
+      uploadBytes(storageRef, file).then((snapshot) => {
+        console.log('Uploaded a blob or file!');
+
+        getDownloadURL(snapshot.ref).then((url) => { // url을 받는다
+          console.log('File available at', url);
+          // ...
+          img_new = url;
+        }).then(async () => {
+          const minpRef = doc(db, "minp", "post" + date_id);
+
+          await updateDoc(minpRef, {
+            title: titleRef,
+            content: contentRef,
+            img: img_new
+          });
+
+          console.log("img  :", img_new);
+          location.href = `./show.html?date_id=${date_id}`;
+          alert('작성 완료'); // 작성 완료라는 알람을 띄운다
+        })
+      });
+      //
+
+      const minpRef = doc(db, "minp", "post" + date_id);
+
+      await updateDoc(minpRef, {
+        title: titleRef,
+        content: contentRef,
+        img: img
+      });
+
+      location.href = `./show.html?date_id=${date_id}`;
+    });
+
+    $('#cnlth').click(async function () {
+      location.href = `./show.html?date_id=${date_id}`;
+    });
+
+    $('#tkwls').on("change", function (e) {
+      let file = e.target.files[0];
+
+      let reader = new FileReader();
+      reader.onload = function (event) {
+        $('#thumbnail').attr("src", event.target.result);
+      }
+
+      reader.readAsDataURL(file);
+    });
+
+    $('#cnlth').click(async function () {
+      history.back();
+    })
+  </script>
+</head>
+
+<body>
+
+  <header class="modify-header">
+    <h1>게시글 수정 페이지</h1>
+  </header>
+
+  <main class="modify-main">
+    <div class="modify-main-flex">
+      <div class="modify-main-container">
+        <label for="title">제목</label>
+        <input id="title" class="modify-main-container-title" type="text" placeholder="제목을 입력해주세요" />
+      </div>
+
+      <div class="modify-main-container margin-left-50">
+        <label for="category">카테고리</label>
+        <select id="category">
+          <option id="0" value="한식">한식</option>
+          <option id="1" value="중식">중식</option>
+          <option id="2" value="일식">일식</option>
+          <option id="3" value="치킨">치킨</option>
+          <option id="4" value="피자">피자</option>
+          <option id="5" value="버거">버거</option>
+          <option id="6" value="분식">분식</option>
+          <option id="7" value="기타">기타</option>
+        </select>
+        <i class="fa-solid fa-caret-down"></i>
+      </div>
+    </div>
+
+    <div class="modify-main-img">
+      <img id="thumbnail" alt="..." src="./svg/image-regular.svg" />
+      <div class="modify-main-container">
+        <label for="tkwls">대표 이미지 선택</label>
+        <input id="tkwls" class="modify-main-container-img" type="file" accept="image/*" />
+      </div>
+    </div>
+
+    <div class="modify-main-container">
+      <label for="content">내용</label>
+      <textarea id="content" placeholder="내용을 입력해주세요"></textarea>
+    </div>
+
+    <div class="modify-main-footer">
+      <button id="wkrtjd" class="modify-main-footer-write-btn" type="button">작성</button>
+      <button id="cnlth" class="modify-main-footer-cancle-btn" type="button">취소</button>
+    </div>
+
+  </main>
+</body>
+
+</html>
